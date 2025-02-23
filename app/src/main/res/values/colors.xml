@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="orange">#E76F51</color>
+    <color name="nav_item_color">#795548</color> <!-- Unselected item color -->
+    <color name="nav_item_selected_color">#D8C3A5</color>
+    <color name="hint_color">#9B9283</color> <!-- Selected item color -->
+
+</resources>

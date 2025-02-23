@@ -1,0 +1,40 @@
+<resources>
+    <string name="app_name">Food Planner</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="onBoard_page1_Title">Plan Your Meals with Ease</string>
+    <string name="onBoard_page1_Description">Stay organized and make healthier choices by creating a personalized meal plan for your week.</string>
+    <string name="onBoard_page2_Title">Endless Meal Possibilities</string>
+    <string name="onBoard_page3_Title">Step-by-Step Recipes</string>
+    <string name="onBoard_page2_description">Explore a variety of ingredients and recipes to create balanced and delicious meals every day.</string>
+    <string name="onBoard_page3_description">Get detailed recipes with clear instructions and videos to guide you through every step of your cooking journey.</string>
+    <string name="Skip">Skip</string>
+    <string name="start">Start</string>
+    <string name="home">Home</string>
+    <string name="Search">Search</string>
+    <string name="Favorites">Favorites</string>
+    <string name="Calendar">Calendar</string>
+    <string name="Profile">Profile</string>
+    <string name="Signin">Sign in</string>
+    <string name="Email">Email</string>
+    <string name="Password">Password</string>
+    <string name="Or">OR</string>
+    <string name="continue_with_google">Continue with Google</string>
+    <string name="continue_with_faebook">Continue with Faebook</string>
+    <string name="login">Log in</string>
+    <string name="not_yet_registered_sign_up">Not yet registered ? Sign up</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="name">Name</string>
+    <string name="already_have_account_log_in">Already have account ? Log in</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="email_is_invalid">Invalid Email format</string>
+    <string name="passwords_must_match">Passwords must match</string>
+    <string name="password_is_too_short_6"><![CDATA[Password is too short(<6)]]></string>
+
+    <string name="facebook_app_id">558338217239956</string>
+    <string name="fb_login_protocol_scheme">fb558338217239956</string>
+    <string name="facebook_client_token">d087a2090d80245670e2b2a24cf6fcbf</string>
+
+    <string name="default_web_client_id">462874854934-d221jke4rqkvrim1t9tdsmv9nbjm7kre.apps.googleusercontent.com</string>
+
+</resources>
