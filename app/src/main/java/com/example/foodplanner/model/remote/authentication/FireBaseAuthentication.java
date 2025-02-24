@@ -47,6 +47,9 @@ public class FireBaseAuthentication {
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        AuthUser authUser=AuthUser.getInstance(user.getDisplayName(),user.getEmail(),null);
+                        authUser.setAutherized(true);
                         callback.onSuccess();
                     } else {
                         callback.onFailure(task.getException().getMessage());

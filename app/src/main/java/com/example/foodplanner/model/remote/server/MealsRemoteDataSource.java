@@ -1,43 +1,41 @@
 package com.example.foodplanner.model.remote.server;
 
-import android.util.Log;
-
 import com.example.foodplanner.model.Meals;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import hu.akarnokd.rxjava3.retrofit.RxJava3CallAdapterFactory;
+import io.reactivex.rxjava3.core.Single;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MealsClient {
+public class MealsRemoteDataSource {
     private  String URL="https://www.themealdb.com/api/json/v1/1/";
     private MealsService service;
-    private static MealsClient mealsClient=null;
+    private static MealsRemoteDataSource mealsRemoteDataSource =null;
 
-    public MealsClient() {
+    private MealsRemoteDataSource() {
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(Meals.class, new MealsDeserializer())
                 .create();
         Retrofit retrofit= new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create(gson))
+                .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
                 .baseUrl(URL).build();
         service=retrofit.create(MealsService.class);
     }
-    public static MealsClient getInstance()
+    public static MealsRemoteDataSource getInstance()
     {
-        if(mealsClient==null)
+        if(mealsRemoteDataSource ==null)
         {
-            mealsClient=new MealsClient();
+            mealsRemoteDataSource =new MealsRemoteDataSource();
         }
-        return  mealsClient;
+        return mealsRemoteDataSource;
     }
-    public void getRandomMealCall(NetworkCallback networkCallback)
+    public Single<Meals> getRandomMealCall()
     {
-        Call<Meals> call=service.getRandomMeal();
-        call.enqueue(new Callback<Meals>() {
+        return service.getRandomMeal();
+        /*call.enqueue(new Callback<Meals>() {
             @Override
             public void onResponse(Call<Meals> call, Response<Meals> response) {
                 if(response.isSuccessful())
@@ -55,7 +53,7 @@ public class MealsClient {
                 networkCallback.onFailureResult(t.getMessage());
 
             }
-        });
+        });*/
     }
 }
 

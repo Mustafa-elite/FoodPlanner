@@ -36,5 +36,7 @@
     <string name="facebook_client_token">d087a2090d80245670e2b2a24cf6fcbf</string>
 
     <string name="default_web_client_id">462874854934-d221jke4rqkvrim1t9tdsmv9nbjm7kre.apps.googleusercontent.com</string>
+    <string name="password_cant_be_empty">Password cant be empty</string>
+    <string name="google_sign_in_failed">Google Sign-In Failed!</string>
 
 </resources>

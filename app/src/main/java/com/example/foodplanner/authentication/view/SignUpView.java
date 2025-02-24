@@ -11,5 +11,4 @@ public interface SignUpView {
 
     void passwordConfirmError();
 
-    void navigateToNextFragment();
 }

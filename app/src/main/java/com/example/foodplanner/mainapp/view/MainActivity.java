@@ -1,25 +1,19 @@
 package com.example.foodplanner.mainapp.view;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 
-import androidx.annotation.Nullable;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.foodplanner.R;
-import com.example.foodplanner.authentication.view.SignUpFragment;
-import com.example.foodplanner.model.Meals;
-import com.example.foodplanner.model.remote.server.MealsClient;
-import com.example.foodplanner.model.remote.server.NetworkCallback;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class MainActivity extends AppCompatActivity implements NetworkCallback {
+public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,8 +26,9 @@ public class MainActivity extends AppCompatActivity implements NetworkCallback {
         NavigationUI.setupWithNavController(bottomNavigationView,navController);
 
 
-        MealsClient mealsClient= MealsClient.getInstance();
-        mealsClient.getRandomMealCall(this);
+        //MealsRemoteDataSource mealsClient= MealsRemoteDataSource.getInstance();
+
+        //mealsClient.getRandomMealCall();
 
 
     }
@@ -69,14 +64,5 @@ public class MainActivity extends AppCompatActivity implements NetworkCallback {
     }
 
 
-    @Override
-    public void onSuccessfulResult(Meals body) {
-        Log.i("TAG", body.toString());
-    }
-
-    @Override
-    public void onFailureResult(String message) {
-
-    }
 
 }

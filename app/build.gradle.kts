@@ -48,14 +48,18 @@ dependencies {
     implementation (libs.retrofit)
     implementation (libs.converter.gson)
     implementation (libs.okhttp)
-
     implementation (libs.glide)
+
+
+    implementation (libs.rxandroid)
+    implementation (libs.rxjava)
+    implementation (libs.rxjava3.retrofit.adapter)
+    implementation (libs.room.rxjava3)
 
     implementation (libs.dotsindicator)
     implementation (libs.navigation.fragment.ktx)
     implementation (libs.navigation.ui.ktx)
     implementation (libs.material)
-
 
     implementation (platform(libs.firebase.bom))
     implementation (libs.firebase.auth)
@@ -69,6 +73,9 @@ dependencies {
     implementation(libs.credentials)
     implementation(libs.credentials.play.services.auth)
     implementation(libs.googleid)
+
+
+
 
 
 
