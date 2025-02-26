@@ -55,6 +55,10 @@ dependencies {
     implementation (libs.rxjava)
     implementation (libs.rxjava3.retrofit.adapter)
     implementation (libs.room.rxjava3)
+    implementation (libs.rxandroid)
+
+
+    implementation (libs.rx.preferences)
 
     implementation (libs.dotsindicator)
     implementation (libs.navigation.fragment.ktx)

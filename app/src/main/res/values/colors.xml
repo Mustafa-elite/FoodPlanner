@@ -7,4 +7,7 @@
     <color name="nav_item_selected_color">#D8C3A5</color>
     <color name="hint_color">#9B9283</color> <!-- Selected item color -->
 
+    <color name="semi_transparent_black">#80000000</color> <!-- 50% transparent black -->
+
+
 </resources>

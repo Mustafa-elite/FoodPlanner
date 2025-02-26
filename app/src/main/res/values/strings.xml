@@ -38,5 +38,14 @@
     <string name="default_web_client_id">462874854934-d221jke4rqkvrim1t9tdsmv9nbjm7kre.apps.googleusercontent.com</string>
     <string name="password_cant_be_empty">Password cant be empty</string>
     <string name="google_sign_in_failed">Google Sign-In Failed!</string>
+    <string name="longStringTest">Step-by-step cooking instructions here...Step-by-step cooking instructions here...Step-by-step cooking instructions here...Step-by-step cooking instructions here...Step-by-step cooking instructions here...Step-by-step cooking instructions here...Step-by-step cooking instructions here...Step-by-step cooking instructions here...Step-by-step cooking instructions here...Step-by-step cooking instructions here...Step-by-step cooking instructions here...Step-by-step cooking instructions here...Step-by-step cooking instructions here...Step-by-step cooking instructions here...Step-by-step cooking instructions here...Step-by-step cooking instructions here...Step-by-step cooking instructions here...Step-by-step cooking instructions here...Step-by-step cooking instructions here...Step-by-step cooking instructions here...Step-by-step cooking instructions here...Step-by-step cooking instructions here...Step-by-step cooking instructions here...Step-by-step cooking instructions here...Step-by-step cooking instructions here...Step-by-step cooking instructions here...Step-by-step cooking instructions here...Step-by-step cooking instructions here...Step-by-step cooking instructions here...Step-by-step cooking instructions here...Step-by-step cooking instructions here...Step-by-step cooking instructions here...Step-by-step cooking instructions here...Step-by-step cooking instructions here...Step-by-step cooking instructions here...Step-by-step cooking instructions here...Step-by-step cooking instructions here...Step-by-step cooking instructions here...Step-by-step cooking instructions here...Step-by-step cooking instructions here...Step-by-step cooking instructions here...Step-by-step cooking instructions here...Step-by-step cooking instructions here...</string>
+    <string name="instructions">Instructions:</string>
+    <string name="have_you_decided_on_today_s_meal">HAVE YOU DECIDED ON TODAY\'S MEAL?</string>
+    <string name="ingredients">Ingredients:</string>
+    <string name="meal_image">meal image</string>
+    <string name="ingredient_image">ingredient_image</string>
+    <string name="lazy_meals_for_a_cozy_day">Lazy meals for a cozy day:</string>
+    <string name="randommeal">RandomMeal</string>
+    <string name="youtube">Youtube</string>
 
 </resources>

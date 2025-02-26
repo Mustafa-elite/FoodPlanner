@@ -1,8 +1,12 @@
 package com.example.foodplanner.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.util.ArrayList;
 import java.util.List;
 
-public class Meal {
+public class Meal implements Parcelable {
     private String idMeal;
     private String strMeal;
     private String strDrinkAlternate;
@@ -99,4 +103,59 @@ public class Meal {
 
     public String getDateModified() { return dateModified; }
     public void setDateModified(String dateModified) { this.dateModified = dateModified; }
+
+    protected Meal(Parcel in) {
+        idMeal = in.readString();
+        strMeal = in.readString();
+        strDrinkAlternate = in.readString();
+        strCategory = in.readString();
+        strArea = in.readString();
+        strInstructions = in.readString();
+        strMealThumb = in.readString();
+        strTags = in.readString();
+        strYoutube = in.readString();
+        strSource = in.readString();
+        strImageSource = in.readString();
+        strCreativeCommonsConfirmed = in.readString();
+        dateModified = in.readString();
+        ingredients = new ArrayList<>();
+        in.readTypedList(ingredients, Ingredient.CREATOR);
+    }
+
+    public static final Creator<Meal> CREATOR = new Creator<Meal>() {
+        @Override
+        public Meal createFromParcel(Parcel in) {
+            return new Meal(in);
+        }
+
+        @Override
+        public Meal[] newArray(int size) {
+            return new Meal[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(idMeal);
+        dest.writeString(strMeal);
+        dest.writeString(strDrinkAlternate);
+        dest.writeString(strCategory);
+        dest.writeString(strArea);
+        dest.writeString(strInstructions);
+        dest.writeString(strMealThumb);
+        dest.writeString(strTags);
+        dest.writeString(strYoutube);
+        dest.writeString(strSource);
+        dest.writeString(strImageSource);
+        dest.writeString(strCreativeCommonsConfirmed);
+        dest.writeString(dateModified);
+
+        // Write List<Ingredient>
+        dest.writeTypedList(ingredients);
+    }
 }
