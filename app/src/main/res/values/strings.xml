@@ -47,5 +47,8 @@
     <string name="lazy_meals_for_a_cozy_day">Lazy meals for a cozy day:</string>
     <string name="randommeal">RandomMeal</string>
     <string name="youtube">Youtube</string>
+    <string name="category">Category</string>
+    <string name="ingredient">Ingredient</string>
+    <string name="country">Country</string>
 
 </resources>

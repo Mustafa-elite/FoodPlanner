@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.foodplanner.R;
 
-import com.example.foodplanner.model.Ingredient;
+import com.example.foodplanner.model.remote.server.ingredients.Ingredient;
 
 import java.util.List;
 

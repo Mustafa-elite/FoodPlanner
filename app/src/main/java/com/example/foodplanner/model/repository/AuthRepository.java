@@ -4,7 +4,6 @@ import com.example.foodplanner.authentication.model.AuthUser;
 import com.example.foodplanner.model.remote.authentication.AuthCallback;
 import com.example.foodplanner.model.remote.authentication.FireBaseAuthentication;
 import com.example.foodplanner.model.remote.authentication.ThirdPartyAuth;
-import com.example.foodplanner.model.remote.server.MealsRemoteDataSource;
 import com.facebook.login.LoginResult;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 

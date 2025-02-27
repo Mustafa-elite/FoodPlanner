@@ -1,8 +1,8 @@
-package com.example.foodplanner.model.remote.server;
+package com.example.foodplanner.model.remote.server.meals;
 
-import com.example.foodplanner.model.Ingredient;
-import com.example.foodplanner.model.Meal;
-import com.example.foodplanner.model.Meals;
+import android.util.Log;
+
+import com.example.foodplanner.model.remote.server.ingredients.Ingredient;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -25,21 +25,20 @@ public class MealsDeserializer implements JsonDeserializer<Meals> {
         for (JsonElement mealElement : mealsArray) {
             JsonObject mealObject = mealElement.getAsJsonObject();
 
-            String idMeal = mealObject.get("idMeal").getAsString();
-            String strMeal = mealObject.get("strMeal").getAsString();
-            String strDrinkAlternate = mealObject.get("strDrinkAlternate").isJsonNull() ? null : mealObject.get("strDrinkAlternate").getAsString();
-            String strCategory = mealObject.get("strCategory").getAsString();
-            String strArea = mealObject.get("strArea").getAsString();
-            String strInstructions = mealObject.get("strInstructions").getAsString();
-            String strMealThumb = mealObject.get("strMealThumb").getAsString();
-            String strTags = mealObject.get("strTags").isJsonNull() ? null : mealObject.get("strTags").getAsString();
-            String strYoutube = mealObject.get("strYoutube").isJsonNull() ? null : mealObject.get("strYoutube").getAsString();
-            String strSource = mealObject.get("strSource").isJsonNull() ? null : mealObject.get("strSource").getAsString();
-            String strImageSource = mealObject.get("strImageSource").isJsonNull() ? null : mealObject.get("strImageSource").getAsString();
-            String strCreativeCommonsConfirmed = mealObject.get("strCreativeCommonsConfirmed").isJsonNull() ? null : mealObject.get("strCreativeCommonsConfirmed").getAsString();
-            String dateModified = mealObject.get("dateModified").isJsonNull() ? null : mealObject.get("dateModified").getAsString();
+            String idMeal = getSafeString(mealObject, "idMeal");
+            String strMeal = getSafeString(mealObject, "strMeal");
+            String strDrinkAlternate = getSafeString(mealObject, "strDrinkAlternate");
+            String strCategory = getSafeString(mealObject, "strCategory");
+            String strArea = getSafeString(mealObject, "strArea");
+            String strInstructions = getSafeString(mealObject, "strInstructions");
+            String strMealThumb = getSafeString(mealObject, "strMealThumb");
+            String strTags = getSafeString(mealObject, "strTags");
+            String strYoutube = getSafeString(mealObject, "strYoutube");
+            String strSource = getSafeString(mealObject, "strSource");
+            String strImageSource = getSafeString(mealObject, "strImageSource");
+            String strCreativeCommonsConfirmed = getSafeString(mealObject, "strCreativeCommonsConfirmed");
+            String dateModified = getSafeString(mealObject, "dateModified");
 
-            // Extracting Ingredients dynamically
             List<Ingredient> ingredientList = new ArrayList<>();
             for (int i = 1; i <= 20; i++) {
                 String ingredientKey = "strIngredient" + i;
@@ -63,5 +62,11 @@ public class MealsDeserializer implements JsonDeserializer<Meals> {
         }
         return new Meals(mealsList);
     }
+    private String getSafeString(JsonObject jsonObject, String key) {
+        return jsonObject.has(key) && !jsonObject.get(key).isJsonNull()
+                ? jsonObject.get(key).getAsString()
+                : null;
+    }
+
 }
 

@@ -1,7 +1,6 @@
 package com.example.foodplanner.mealdetails.view;
 
 import android.graphics.Bitmap;
-import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -21,14 +20,13 @@ import android.widget.Toast;
 
 import com.example.foodplanner.R;
 import com.example.foodplanner.mealdetails.presenter.MealDetailsPresenter;
-import com.example.foodplanner.model.Meal;
-import com.example.foodplanner.model.remote.server.MealsRemoteDataSource;
+import com.example.foodplanner.model.remote.server.meals.Meal;
+import com.example.foodplanner.model.remote.server.network.RemoteDataSource;
 import com.example.foodplanner.model.repository.DataRepository;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
-import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 
@@ -68,7 +66,7 @@ public class MealDetailsFragment extends Fragment implements MealDetailsView,Det
             meal = getArguments().getParcelable("random_meal");
             if (meal != null) {
                 IngredientsAdapter ingredientsAdapter=new IngredientsAdapter(meal.getIngredients(),this);
-                mealDetailsPresenter=new MealDetailsPresenter(this, DataRepository.getInstance(MealsRemoteDataSource.getInstance(),getContext()));
+                mealDetailsPresenter=new MealDetailsPresenter(this, DataRepository.getInstance(RemoteDataSource.getInstance(),getContext()));
                 mealDetailsPresenter.loadMainImage(meal.getStrMealThumb());
                 //mealDetailsPresenter.loadcountryImage(meal.getStrArea());
                 LinearLayoutManager layoutManager=new LinearLayoutManager(getContext());

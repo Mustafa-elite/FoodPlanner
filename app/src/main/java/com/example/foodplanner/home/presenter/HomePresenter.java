@@ -8,7 +8,7 @@ import android.util.Log;
 import com.bumptech.glide.Glide;
 import com.example.foodplanner.R;
 import com.example.foodplanner.home.view.HomeView;
-import com.example.foodplanner.model.Meal;
+import com.example.foodplanner.model.remote.server.meals.Meal;
 import com.example.foodplanner.model.repository.DataRepository;
 
 import java.util.ArrayList;

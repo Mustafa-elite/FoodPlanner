@@ -1,6 +1,5 @@
-package com.example.foodplanner.model;
+package com.example.foodplanner.model.remote.server.meals;
 
-import java.util.ArrayList;
 import java.util.List;
 
 

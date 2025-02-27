@@ -2,7 +2,7 @@ package com.example.foodplanner.home.view;
 
 import android.widget.ImageView;
 
-import com.example.foodplanner.model.Meal;
+import com.example.foodplanner.model.remote.server.meals.Meal;
 
 public interface HomeViewConnector {
 

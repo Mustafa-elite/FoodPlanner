@@ -3,7 +3,7 @@ package com.example.foodplanner.home.view;
 import android.content.Context;
 import android.graphics.Bitmap;
 
-import com.example.foodplanner.model.Meal;
+import com.example.foodplanner.model.remote.server.meals.Meal;
 
 import java.util.List;
 

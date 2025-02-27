@@ -5,9 +5,7 @@ import android.graphics.Bitmap;
 import android.util.Log;
 
 import com.bumptech.glide.Glide;
-import com.example.foodplanner.home.view.HomeView;
 import com.example.foodplanner.mealdetails.view.MealDetailsView;
-import com.example.foodplanner.model.Meal;
 import com.example.foodplanner.model.repository.DataRepository;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;

@@ -12,8 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.foodplanner.R;
-import com.example.foodplanner.home.presenter.HomePresenter;
-import com.example.foodplanner.model.Meal;
+import com.example.foodplanner.model.remote.server.meals.Meal;
 
 import java.util.List;
 

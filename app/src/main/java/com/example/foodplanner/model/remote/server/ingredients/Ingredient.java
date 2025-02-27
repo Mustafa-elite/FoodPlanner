@@ -1,7 +1,8 @@
-package com.example.foodplanner.model;
+package com.example.foodplanner.model.remote.server.ingredients;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
 
 public class Ingredient implements Parcelable {
     private String ingredient;

@@ -1,7 +1,9 @@
-package com.example.foodplanner.model;
+package com.example.foodplanner.model.remote.server.meals;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import com.example.foodplanner.model.remote.server.ingredients.Ingredient;
 
 import java.util.ArrayList;
 import java.util.List;

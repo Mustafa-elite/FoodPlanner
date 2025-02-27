@@ -20,8 +20,8 @@ import android.widget.Toast;
 
 import com.example.foodplanner.R;
 import com.example.foodplanner.home.presenter.HomePresenter;
-import com.example.foodplanner.model.Meal;
-import com.example.foodplanner.model.remote.server.MealsRemoteDataSource;
+import com.example.foodplanner.model.remote.server.meals.Meal;
+import com.example.foodplanner.model.remote.server.network.RemoteDataSource;
 import com.example.foodplanner.model.repository.DataRepository;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -63,7 +63,7 @@ public class HomeFragment extends Fragment implements HomeView , HomeViewConnect
         randomMealsAdapter= new RandomMealsAdapter(new ArrayList<>(),this);
         defineViews(view);
         buttonsHandle();
-        homePresenter = new HomePresenter(this, DataRepository.getInstance(MealsRemoteDataSource.getInstance(),getContext()));
+        homePresenter = new HomePresenter(this, DataRepository.getInstance(RemoteDataSource.getInstance(),getContext()));
         homePresenter.getRandomMeal();
         homePresenter.get10RandomMeals();
 
