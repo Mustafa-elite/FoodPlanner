@@ -37,4 +37,6 @@ public interface ApiService {
     @GET("filter.php")
     Single<Meals> getMealsByCountry(@Query("a") String country);
 
+    @GET("lookup.php")
+    Single<Meals> getMealById(@Query("i") String id);
 }

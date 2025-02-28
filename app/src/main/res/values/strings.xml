@@ -50,5 +50,8 @@
     <string name="category">Category</string>
     <string name="ingredient">Ingredient</string>
     <string name="country">Country</string>
+    <string name="meals">Meals</string>
+    <string name="your_favorite_meals">Your Favorite Meals:</string>
+    <string name="delete">Delete</string>
 
 </resources>

@@ -185,7 +185,8 @@ public class SearchPresenter {
                 .subscribe(
                         meals ->
                         {
-                            Log.i("goToCategoryMeals", meals.toString());
+                            searchViewInterface.navigateToSearchedMeals(meals,categoryName+ " Meals");
+                            //Log.i("goToCategoryMeals", meals.toString());
                         },
                         throwable -> Log.i("TAG", throwable.getCause().toString()));
         ;
@@ -199,7 +200,8 @@ public class SearchPresenter {
                 .subscribe(
                         meals ->
                         {
-                            Log.i("goToIngredientMeals", meals.toString());
+                            searchViewInterface.navigateToSearchedMeals(meals,ingredientName+ " Meals");
+                            //Log.i("goToIngredientMeals", meals.toString());
                         },
                         throwable -> Log.i("TAG", throwable.getCause().toString()));
         ;
@@ -213,7 +215,8 @@ public class SearchPresenter {
                 .subscribe(
                         meals ->
                         {
-                            Log.i("goToCountryMeals", meals.toString());
+                            searchViewInterface.navigateToSearchedMeals(meals,countryName+ " Meals");
+                            //Log.i("goToCountryMeals", meals.toString());
                         },
                         throwable -> Log.i("TAG", throwable.getCause().toString()));
         ;

@@ -67,8 +67,6 @@ public class HomeFragment extends Fragment implements HomeView , HomeViewConnect
         homePresenter.getRandomMeal();
         homePresenter.get10RandomMeals();
 
-
-
         LinearLayoutManager layoutManager=new LinearLayoutManager(getContext());
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
 

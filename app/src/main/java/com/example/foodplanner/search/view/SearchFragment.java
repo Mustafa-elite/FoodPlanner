@@ -8,6 +8,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -25,6 +27,8 @@ import com.example.foodplanner.R;
 import com.example.foodplanner.model.remote.server.categories.Category;
 import com.example.foodplanner.model.remote.server.countries.Country;
 import com.example.foodplanner.model.remote.server.ingredients.Ingredient;
+import com.example.foodplanner.model.remote.server.meals.Meal;
+import com.example.foodplanner.model.remote.server.meals.Meals;
 import com.example.foodplanner.model.remote.server.network.RemoteDataSource;
 import com.example.foodplanner.model.repository.DataRepository;
 import com.example.foodplanner.search.presenter.SearchPresenter;
@@ -57,6 +61,7 @@ public class SearchFragment extends Fragment implements SearchViewConnector, Sea
     IngredientAdapter ingredientsAdapter;
     CountriesAdapter countriesAdapter ;
     Observable<String> searchObservable;
+
 
 
     @Override
@@ -219,5 +224,18 @@ public class SearchFragment extends Fragment implements SearchViewConnector, Sea
         search_recyclerView.setAdapter(countriesAdapter);
         countriesAdapter.updateCountriesList(countries);
         search_recyclerView.setLayoutManager(new GridLayoutManager(getContext(),2));
+    }
+
+    @Override
+    public void navigateToSearchedMeals(Meals meals, String title) {
+        navigateToMeals(meals,title);
+    }
+
+    private void navigateToMeals(Meals meals,String title) {
+        NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
+        Bundle bundle= new Bundle();
+        bundle.putParcelable("searched_meals",meals);
+        bundle.putString("title",title);
+        navController.navigate(R.id.searchedMealsFragment2,bundle);
     }
 }

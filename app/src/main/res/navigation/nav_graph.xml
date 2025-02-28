@@ -44,4 +44,9 @@
         android:name="com.example.foodplanner.mealdetails.view.MealDetailsFragment"
         android:label="fragment_meal_details"
         tools:layout="@layout/fragment_meal_details" />
+    <fragment
+        android:id="@+id/searchedMealsFragment2"
+        android:name="com.example.foodplanner.searchedmeals.view.SearchedMealsFragment"
+        android:label="fragment_searched_meals"
+        tools:layout="@layout/fragment_searched_meals" />
 </navigation>

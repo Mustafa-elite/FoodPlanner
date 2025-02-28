@@ -38,6 +38,7 @@ public class MealDetailsFragment extends Fragment implements MealDetailsView,Det
     WebView webView;
     MealDetailsPresenter mealDetailsPresenter;
     Meal meal;
+    Bitmap mealImage;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -85,6 +86,7 @@ public class MealDetailsFragment extends Fragment implements MealDetailsView,Det
             @Override
             public void onClick(View v) {
                 btn_favorite.setImageResource(R.drawable.red_colored_fav);
+                mealDetailsPresenter.saveFavMeal(meal,mealImage);
             }
         });
     }
@@ -129,6 +131,7 @@ public class MealDetailsFragment extends Fragment implements MealDetailsView,Det
 
     @Override
     public void setMainImage(Bitmap bitmap) {
+        mealImage=bitmap;
         iv_detail_Meal_image.setImageBitmap(bitmap);
     }
 

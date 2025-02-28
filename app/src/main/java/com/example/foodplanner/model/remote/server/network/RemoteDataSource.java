@@ -76,6 +76,9 @@ public class RemoteDataSource {
     public Single<Meals> getMealsByCountryCall(String country) {
         return apiService.getMealsByCountry(country);
     }
+    public Single<Meals> getMealByIdCall(String id) {
+        return apiService.getMealById(id);
+    }
 
 
 
