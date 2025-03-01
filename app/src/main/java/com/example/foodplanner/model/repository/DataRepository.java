@@ -4,7 +4,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 
 
-import com.example.foodplanner.model.local.database.DbMeal;
+import com.example.foodplanner.model.local.database.calendar.ScheduledMeal;
+import com.example.foodplanner.model.local.database.favorites.DbMeal;
 import com.example.foodplanner.model.local.database.LocalDataSource;
 import com.example.foodplanner.model.remote.server.categories.Categories;
 import com.example.foodplanner.model.remote.server.countries.Countries;
@@ -88,19 +89,33 @@ public class DataRepository {
     public Completable insertLocalMeal(Meal mealToSave, Bitmap mealImage)
     {
         DbMeal dbMeal= new DbMeal(mealToSave,mealImage);
-        return localDataSource.insertMeal(dbMeal);
+        return localDataSource.insertFavMeal(dbMeal);
     }
 
-    public Completable deleteLocalMeal(Meal mealToDelete)
+    public Completable deleteLocalMeal(DbMeal dbMeal)
     {
-        DbMeal dbMeal= new DbMeal(mealToDelete);
-        return localDataSource.deleteMeal(dbMeal);
+        return localDataSource.deleteFavMeal(dbMeal);
     }
     public Flowable<List<DbMeal>> getLocalFavMeals()
     {
         return localDataSource.getStoredFavMeals();
 
     }
+
+    public Flowable<List<ScheduledMeal>> getLocalCalMeals(String date)
+    {
+        return localDataSource.getCalendarMeals(date);
+    }
+
+    public Completable insertLocalCalMeal(ScheduledMeal scheduledMeal)
+    {
+        return localDataSource.insertCalendarMeal(scheduledMeal);
+    }
+    public Completable deleteLocalCalMeal(String selectedDate,String mealId)
+    {
+        return localDataSource.deleteCalendarMeal(selectedDate,mealId);
+    }
+
 
 
 
@@ -110,6 +125,13 @@ public class DataRepository {
     public Preference<String> saveLocalSharedPref(String key,String val)
     {
         sharedPrefs.setRxSharedPreferencesContext(context);
+
         return sharedPrefs.saveSharedPref(key,val);
+    }
+    public Preference<String>getLocalSharedPref(String key,String defaultValue)
+    {
+        sharedPrefs.setRxSharedPreferencesContext(context);
+        return sharedPrefs.getSharedPref(key,defaultValue);
+
     }
 }

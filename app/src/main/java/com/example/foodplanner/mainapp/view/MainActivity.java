@@ -1,17 +1,21 @@
 package com.example.foodplanner.mainapp.view;
 
 import android.os.Bundle;
+import android.widget.Toast;
 
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.foodplanner.R;
 
+import com.example.foodplanner.mainapp.NetworkUtil;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -25,13 +29,38 @@ public class MainActivity extends AppCompatActivity {
         NavController navController= ((NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment)).getNavController();
         NavigationUI.setupWithNavController(bottomNavigationView,navController);
 
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            int destinationId = item.getItemId();
 
-        //MealsRemoteDataSource mealsClient= MealsRemoteDataSource.getInstance();
+            if (destinationId==R.id.searchFragment&& !NetworkUtil.isConnected(this)) {
+                Toast.makeText(this, "No internet connection!", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+            if((destinationId==R.id.favoritesFragment ||destinationId==R.id.calendarFragment)&&
+            FirebaseAuth.getInstance().getCurrentUser()==null)
+            {
+                openSignInDialog();
+                return false;
 
-        //mealsClient.getRandomMealCall();
+            }
+            navController.navigate(destinationId);
+            return true;
+        });
 
 
     }
+
+    private void openSignInDialog() {
+        ConfirmationDialogFragment dialog = ConfirmationDialogFragment.newInstance(
+                "You have to be Signed in to view your favourites and calendar ","Sign In",
+                () -> {
+                    NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+                    navController.navigate(R.id.loginFragment);
+                }
+        );
+        dialog.show(getSupportFragmentManager(), "ConfirmationDialog");
+    }
+
 
     @Override
     public void onBackPressed() {

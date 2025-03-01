@@ -44,6 +44,7 @@ public class RandomMealsAdapter extends RecyclerView.Adapter<RandomMealsAdapter.
         holder.mealImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 homeViewConnector.navigateToDetails(meal);
             }
         });

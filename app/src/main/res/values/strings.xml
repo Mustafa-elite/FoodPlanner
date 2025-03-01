@@ -53,5 +53,11 @@
     <string name="meals">Meals</string>
     <string name="your_favorite_meals">Your Favorite Meals:</string>
     <string name="delete">Delete</string>
+    <string name="hello_chef">Hello Chef </string>
+    <string name="favorite_meals">Favorite Meals</string>
+    <string name="calendar_meals">Calendar Meals</string>
+    <string name="log_out">Log Out</string>
+    <string name="do_you_really_want_to_delete_the_meal_from_the_favorite">Do you Really want To delete the meal From the Favorite!</string>
+    <string name="you_have_to_be_signed_in_to_add_meals_to_calendar">You have to be Signed in to add meals to Calendar</string>
 
 </resources>

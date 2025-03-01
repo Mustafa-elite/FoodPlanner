@@ -2,59 +2,45 @@ package com.example.foodplanner.calendar.view;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CalendarView;
+import android.widget.Toast;
 
+import com.example.foodplanner.mainapp.NetworkUtil;
+import com.example.foodplanner.mainapp.view.ConfirmationDialogFragment;
 import com.example.foodplanner.R;
+import com.example.foodplanner.calendar.presenter.CalendarPresenter;
+import com.example.foodplanner.model.local.database.favorites.DbMeal;
+import com.example.foodplanner.model.remote.server.meals.Meal;
+import com.example.foodplanner.model.remote.server.network.RemoteDataSource;
+import com.example.foodplanner.model.repository.DataRepository;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link CalendarFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class CalendarFragment extends Fragment {
+import java.util.List;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+public class CalendarFragment extends Fragment implements com.example.foodplanner.calendar.view.CalendarView,CalendarViewConnector {
 
-    public CalendarFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment CalendarFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static CalendarFragment newInstance(String param1, String param2) {
-        CalendarFragment fragment = new CalendarFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
+    RecyclerView CalRecyclerView;
+    RecyclerView calRecyclerView;
+    CalendarPresenter calendarPresenter;
+    CalAdapter calAdapter;
+    CalendarView calendarView;
+    String selectedDate;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+
     }
 
     @Override
@@ -62,5 +48,86 @@ public class CalendarFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_calendar, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        BottomNavigationView bottomNav = getActivity().findViewById(R.id.bottomNavigationView);
+        if (bottomNav != null) {
+            bottomNav.setVisibility(View.VISIBLE);
+        }
+        defineViews(view);
+        buttonsHandle();
+        calRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        calAdapter= new CalAdapter(getContext(),this);
+
+        calendarPresenter =new CalendarPresenter(this, DataRepository.getInstance(RemoteDataSource.getInstance(),getContext()));
+
+
+        calRecyclerView.setAdapter(calAdapter);
+
+
+
+
+
+    }
+
+    private void buttonsHandle() {
+        calendarView.setOnDateChangeListener((cView, year, month, dayOfMonth) -> {
+            selectedDate = dayOfMonth + "-" + (month + 1) + "-" + year;
+            //Toast.makeText(getContext(), "Selected Date: " + selectedDate, Toast.LENGTH_SHORT).show();
+            calendarPresenter.getDateMeal(selectedDate);
+        });
+    }
+
+    private void defineViews(View view) {
+        calendarView = view.findViewById(R.id.calendarView);
+        calRecyclerView=view.findViewById(R.id.cal_recycler_view);
+
+    }
+
+    @Override
+    public void deleteCalMeal(String mealId) {
+        ConfirmationDialogFragment dialog = ConfirmationDialogFragment.newInstance(
+                "Do you Really want To delete the meal From the Calendar","Delete",
+                () -> {
+                    calendarPresenter.removeCalMeal(mealId,selectedDate);
+                }
+        );
+        dialog.show(getActivity().getSupportFragmentManager(), "ConfirmationDialog");
+
+    }
+
+    @Override
+    public void getMealAndAvigate(DbMeal dbMeal) {
+        if(NetworkUtil.isConnected(getContext()))
+        {
+            calendarPresenter.findMealById(dbMeal.getMealId());
+        }
+        else {
+            makeToast("No Internet");
+        }
+    }
+
+    @Override
+    public void updateAdapterList(List<DbMeal> dbMealList) {
+        calAdapter.updatemealsList(dbMealList);
+    }
+    @Override
+    public void makeToast(String msg) {
+        Toast.makeText(getContext(), msg, Toast.LENGTH_LONG).show();
+
+    }
+
+    @Override
+    public void navigateToDetails(Meal meal) {
+        navigateToMealDetails(meal);
+    }
+    private void navigateToMealDetails(Meal meal) {
+        NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
+        Bundle bundle= new Bundle();
+        bundle.putParcelable("random_meal",meal);
+        navController.navigate(R.id.mealDetailsFragment,bundle);
     }
 }

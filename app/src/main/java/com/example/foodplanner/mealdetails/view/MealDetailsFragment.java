@@ -7,6 +7,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -19,15 +21,22 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.foodplanner.R;
+import com.example.foodplanner.mainapp.view.ConfirmationDialogFragment;
 import com.example.foodplanner.mealdetails.presenter.MealDetailsPresenter;
 import com.example.foodplanner.model.remote.server.meals.Meal;
 import com.example.foodplanner.model.remote.server.network.RemoteDataSource;
 import com.example.foodplanner.model.repository.DataRepository;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.datepicker.MaterialDatePicker;
+import com.google.firebase.auth.FirebaseAuth;
 
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebViewClient;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 
 public class MealDetailsFragment extends Fragment implements MealDetailsView,DetailsViewConnector {
@@ -63,6 +72,7 @@ public class MealDetailsFragment extends Fragment implements MealDetailsView,Det
         defineViews(view);
         buttonsHandle();
 
+
         if (getArguments() != null) {
             meal = getArguments().getParcelable("random_meal");
             if (meal != null) {
@@ -85,9 +95,66 @@ public class MealDetailsFragment extends Fragment implements MealDetailsView,Det
         btn_favorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                btn_favorite.setImageResource(R.drawable.red_colored_fav);
-                mealDetailsPresenter.saveFavMeal(meal,mealImage);
+                favBtnHandle();
             }
+        });
+        btn_calendar_add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                calBtnHandle();
+
+            }
+        });
+    }
+
+    private void calBtnHandle() {
+        if(FirebaseAuth.getInstance().getCurrentUser()!=null)
+        {
+            openDatePicker();
+        }
+        else {
+            ConfirmationDialogFragment dialog = ConfirmationDialogFragment.newInstance(
+                    getString(R.string.you_have_to_be_signed_in_to_add_meals_to_calendar),"Sign In",
+                    () -> {
+                        NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment);
+                        navController.navigate(R.id.loginFragment);
+                    }
+            );
+            dialog.show(getActivity().getSupportFragmentManager(), "ConfirmationDialog");
+        }
+    }
+
+    private void favBtnHandle() {
+        if(FirebaseAuth.getInstance().getCurrentUser()!=null)
+        {
+            btn_favorite.setImageResource(R.drawable.red_colored_fav);
+            mealDetailsPresenter.saveFavMeal(meal,mealImage);
+        }
+        else {
+            ConfirmationDialogFragment dialog = ConfirmationDialogFragment.newInstance(
+                    "You have to be Signed in to add meals to favorite","Sign In",
+                    () -> {
+                        NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment);
+                        navController.navigate(R.id.loginFragment);
+                    }
+            );
+            dialog.show(getActivity().getSupportFragmentManager(), "ConfirmationDialog");
+        }
+    }
+
+    private void openDatePicker() {
+        MaterialDatePicker<Long> datePicker = MaterialDatePicker.Builder.datePicker()
+                .setTitleText("Select Meal Date ")
+                .setTheme(R.style.CustomDatePicker)
+                .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
+                .build();
+
+        datePicker.show(getParentFragmentManager(), "DATE_PICKER");
+
+        datePicker.addOnPositiveButtonClickListener(selection -> {
+            String formattedDate = new SimpleDateFormat("d-M-y", Locale.getDefault()).format(new Date(selection));
+            //makeToast(formattedDate);
+            mealDetailsPresenter.saveCalMeal(meal,formattedDate,mealImage);
         });
     }
 

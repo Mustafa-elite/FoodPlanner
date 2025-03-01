@@ -22,6 +22,10 @@ public class SharedPrefs {
         usernamePref.set(value);
         return usernamePref;
     }
+    public Preference<String> getSharedPref(String key,String defaultValue)
+    {
+        return rxSharedPreferences.getString(key,defaultValue);
+    }
     /*RxSharedPreferences rxSharedPreferences = RxSharedPreferences.create(PreferenceManager.getDefaultSharedPreferences(getContext()));
         Preference<String> usernamePref = rxSharedPreferences.getString("username");
         usernamePref.set("Mustafa");

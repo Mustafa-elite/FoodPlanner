@@ -5,6 +5,8 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -20,9 +22,12 @@ import android.widget.Toast;
 
 import com.example.foodplanner.R;
 import com.example.foodplanner.home.presenter.HomePresenter;
+import com.example.foodplanner.mainapp.NetworkUtil;
 import com.example.foodplanner.model.remote.server.meals.Meal;
 import com.example.foodplanner.model.remote.server.network.RemoteDataSource;
 import com.example.foodplanner.model.repository.DataRepository;
+import com.facebook.AccessToken;
+import com.facebook.login.LoginManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
@@ -33,11 +38,14 @@ public class HomeFragment extends Fragment implements HomeView , HomeViewConnect
 
     HomePresenter homePresenter;
 
-    TextView random_meal_title,random_meal_description;
+    TextView random_meal_title,random_meal_description,recyclerviewText;
 
-    ImageView random_meal_image;
+    ImageView random_meal_image, noInternetImageView;
     RecyclerView recyclerView;
     RandomMealsAdapter randomMealsAdapter;
+    ConstraintLayout header_constraintLayout;
+    CardView cardview;
+
 
 
     @Override
@@ -60,31 +68,68 @@ public class HomeFragment extends Fragment implements HomeView , HomeViewConnect
         if (bottomNav != null) {
             bottomNav.setVisibility(View.VISIBLE);
         }
-        randomMealsAdapter= new RandomMealsAdapter(new ArrayList<>(),this);
         defineViews(view);
         buttonsHandle();
-        homePresenter = new HomePresenter(this, DataRepository.getInstance(RemoteDataSource.getInstance(),getContext()));
-        homePresenter.getRandomMeal();
-        homePresenter.get10RandomMeals();
 
-        LinearLayoutManager layoutManager=new LinearLayoutManager(getContext());
-        layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
 
-        recyclerView.setLayoutManager(layoutManager);
-
-        recyclerView.setAdapter(randomMealsAdapter);
-        //homePresenter.saveSharedPref("username","Ahmed");
+        noInternetImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadData(view);
+            }
+        });
+        loadData(view);
 
 
 
+
+
+    }
+
+    private void loadData(View view) {
+        if (NetworkUtil.isConnected(requireContext())) {
+            noInternetImageView.setVisibility(View.GONE);
+            header_constraintLayout.setVisibility(View.VISIBLE);
+            cardview.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.VISIBLE);
+
+            recyclerviewText.setVisibility(View.VISIBLE);
+            randomMealsAdapter= new RandomMealsAdapter(new ArrayList<>(),this);
+
+            homePresenter = new HomePresenter(this, DataRepository.getInstance(RemoteDataSource.getInstance(),getContext()));
+            homePresenter.getRandomMeal();
+            homePresenter.get10RandomMeals();
+
+            LinearLayoutManager layoutManager=new LinearLayoutManager(getContext());
+            layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+
+            recyclerView.setLayoutManager(layoutManager);
+
+            recyclerView.setAdapter(randomMealsAdapter);
+            //homePresenter.saveSharedPref("username","Ahmed");
+        }
+        else {
+            noInternetImageView.setVisibility(View.VISIBLE);
+            header_constraintLayout.setVisibility(View.GONE);
+            cardview.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.GONE);
+            recyclerviewText.setVisibility(View.GONE);
+
+
+        }
     }
 
     private void buttonsHandle() {
         random_meal_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                navigateToMealDetails(homePresenter.getViewdRandomMeal());
-
+                if(NetworkUtil.isConnected(getContext()))
+                {
+                    navigateToMealDetails(homePresenter.getViewdRandomMeal());
+                }
+                else {
+                    makeToast("No Internet");
+                }
             }
         });
     }
@@ -101,6 +146,10 @@ public class HomeFragment extends Fragment implements HomeView , HomeViewConnect
         random_meal_description=view.findViewById(R.id.random_meal_description);
         random_meal_image=view.findViewById(R.id.random_meal_image);
         recyclerView = view.findViewById(R.id.random_meals_recycler_view);
+        noInternetImageView=view.findViewById(R.id.noInternetImageView);
+        header_constraintLayout=view.findViewById(R.id.header_constraintLayout);
+        cardview=view.findViewById(R.id.cardview);
+        recyclerviewText=view.findViewById(R.id.recyclerviewText);
     }
 
 
@@ -136,6 +185,14 @@ public class HomeFragment extends Fragment implements HomeView , HomeViewConnect
 
     @Override
     public void navigateToDetails(Meal meal) {
-        navigateToMealDetails(meal);
+
+        if(NetworkUtil.isConnected(getContext()))
+        {
+            navigateToMealDetails(meal);
+        }
+        else {
+            makeToast("No Internet");
+        }
+
     }
 }

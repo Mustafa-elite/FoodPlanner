@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.example.foodplanner.R;
 import com.example.foodplanner.authentication.presenter.LogInPresenter;
 import com.example.foodplanner.authentication.presenter.ThirdPartyPresenter;
+import com.example.foodplanner.mainapp.NetworkUtil;
 import com.example.foodplanner.model.repository.AuthRepository;
 import com.facebook.AccessToken;
 import com.facebook.login.LoginManager;
@@ -96,10 +97,17 @@ public class LoginFragment extends Fragment implements LoginView,ThirdpartyAuthV
         logIn_Btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                removeErrorMsgs();
-                loginUpPresenter.logIn(
-                        email_EditText.getText().toString(),
-                        password_EditText.getText().toString());
+                if(NetworkUtil.isConnected(getContext()))
+                {
+                    removeErrorMsgs();
+                    loginUpPresenter.logIn(
+                            email_EditText.getText().toString(),
+                            password_EditText.getText().toString());
+                }
+                else {
+                    toastMaker("No Internet");
+                }
+
 
             }
         });
@@ -115,20 +123,34 @@ public class LoginFragment extends Fragment implements LoginView,ThirdpartyAuthV
         google_login_Btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                googleSignInClient.signOut().addOnCompleteListener(requireActivity(), task -> {
-                    Intent signInIntent = googleSignInClient.getSignInIntent();
-                    startActivityForResult(signInIntent, RC_SIGN_IN);
-                });
+                if(NetworkUtil.isConnected(getContext()))
+                {
+                    googleSignInClient.signOut().addOnCompleteListener(requireActivity(), task -> {
+                        Intent signInIntent = googleSignInClient.getSignInIntent();
+                        startActivityForResult(signInIntent, RC_SIGN_IN);
+                    });
+                }
+                else {
+                    toastMaker("No Internet");
+                }
+
             }
         });
         facebook_login_Btn1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //thirdPartyPresenter.facebookLogin(facebook_login_Btn);
-                LoginManager.getInstance().logOut();
-                AccessToken.setCurrentAccessToken(null);
-                //facebook_login_Btn.performClick();
-                thirdPartyPresenter.facebookLogin(facebook_login_Btn);
+                if(NetworkUtil.isConnected(getContext()))
+                {
+                    //thirdPartyPresenter.facebookLogin(facebook_login_Btn);
+                    LoginManager.getInstance().logOut();
+                    AccessToken.setCurrentAccessToken(null);
+                    //facebook_login_Btn.performClick();
+                    thirdPartyPresenter.facebookLogin(facebook_login_Btn);
+                }
+                else {
+                    toastMaker("No Internet");
+                }
+
             }
         });
         signUp_Navigator_text.setOnClickListener(new View.OnClickListener() {

@@ -6,6 +6,8 @@ import android.util.Log;
 
 import com.bumptech.glide.Glide;
 import com.example.foodplanner.mealdetails.view.MealDetailsView;
+import com.example.foodplanner.model.local.database.calendar.ScheduledMeal;
+import com.example.foodplanner.model.local.database.favorites.DbMeal;
 import com.example.foodplanner.model.remote.server.meals.Meal;
 import com.example.foodplanner.model.repository.DataRepository;
 
@@ -70,5 +72,21 @@ public class MealDetailsPresenter {
                             Log.i("TAG", throwable.getMessage());
                             mealDetailsView.makeToast("Internal Problem");
                         });
+    }
+
+    @SuppressLint("CheckResult")
+    public void saveCalMeal(Meal meal, String formattedDate, Bitmap mealImage) {
+
+        ScheduledMeal scheduledMeal=new ScheduledMeal(formattedDate,new DbMeal(meal,mealImage));
+        dataRepository.insertLocalCalMeal(scheduledMeal)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        ()-> mealDetailsView.makeToast("saved Successfully"),
+                        throwable ->
+                        {
+                            Log.i("TAG", throwable.getMessage());
+                            mealDetailsView.makeToast("Internal Problem");
+                        });;
     }
 }

@@ -4,6 +4,7 @@ import com.example.foodplanner.authentication.model.AuthUser;
 import com.example.foodplanner.model.remote.authentication.AuthCallback;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -33,7 +34,19 @@ public class FireBaseAuthentication {
                     if (task.isSuccessful()) {
                         FirebaseUser user = mAuth.getCurrentUser();
                         if (user != null) {
-                            saveUserToFirestore(user.getUid(),authUser.getName(), authUser.getEmail(), callback);
+
+
+                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                    .setDisplayName(authUser.getName()) // Set the name
+                                    .build();
+
+                            user.updateProfile(profileUpdates).addOnCompleteListener(updateTask -> {
+                                if (updateTask.isSuccessful()) {
+                                    saveUserToFirestore(user.getUid(), authUser.getName(), authUser.getEmail(), callback);
+                                } else {
+                                    callback.onFailure("User created but failed to update profile.");
+                                }
+                            });
                         } else {
                             callback.onFailure("User creation successful, but user object is null.");
                         }
@@ -42,6 +55,7 @@ public class FireBaseAuthentication {
                     }
                 });
     }
+
 
     public void signInUser(String email, String password, AuthCallback callback) {
         mAuth.signInWithEmailAndPassword(email, password)
