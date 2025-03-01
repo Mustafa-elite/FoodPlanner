@@ -1,0 +1,7 @@
+<resources>
+
+    <style name="CustomDatePicker" parent="ThemeOverlay.Material3.MaterialCalendar">
+        <item name="android:windowBackground">@color/light_orange</item>
+        <item name="android:background">@color/light_orange</item>
+    </style>
+</resources>
