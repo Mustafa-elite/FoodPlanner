@@ -23,6 +23,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.foodplanner.R;
+import com.example.foodplanner.model.local.database.LocalDataSource;
+import com.example.foodplanner.model.local.sharedpreferences.SharedPrefs;
+import com.example.foodplanner.model.remote.database.FirestoreDb;
 import com.example.foodplanner.model.remote.server.meals.Meal;
 import com.example.foodplanner.model.remote.server.meals.Meals;
 import com.example.foodplanner.model.remote.server.network.RemoteDataSource;
@@ -74,7 +77,12 @@ public class SearchedMealsFragment extends Fragment implements SearchedViewConne
             meals=getArguments().getParcelable("searched_meals");
 
         }
-        searchedMealsPresenter=new SearchedMealsPresenter(this, DataRepository.getInstance(RemoteDataSource.getInstance(),getContext()));
+        searchedMealsPresenter=new SearchedMealsPresenter(this,
+                DataRepository.getInstance(
+                        RemoteDataSource.getInstance(),
+                        LocalDataSource.getInstance(getContext()),
+                        new SharedPrefs(getContext()),
+                        new FirestoreDb()));
         searchedMealsAdapter=new SearchedMealsAdapter(meals.getMeals(),this);
         searchedMealsPresenter.setMealList(meals.getMeals());
         LinearLayoutManager layoutManager=new LinearLayoutManager(getContext());

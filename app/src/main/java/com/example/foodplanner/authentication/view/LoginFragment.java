@@ -1,5 +1,6 @@
 package com.example.foodplanner.authentication.view;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -21,7 +22,12 @@ import com.example.foodplanner.R;
 import com.example.foodplanner.authentication.presenter.LogInPresenter;
 import com.example.foodplanner.authentication.presenter.ThirdPartyPresenter;
 import com.example.foodplanner.mainapp.NetworkUtil;
+import com.example.foodplanner.model.local.database.LocalDataSource;
+import com.example.foodplanner.model.local.sharedpreferences.SharedPrefs;
+import com.example.foodplanner.model.remote.database.FirestoreDb;
+import com.example.foodplanner.model.remote.server.network.RemoteDataSource;
 import com.example.foodplanner.model.repository.AuthRepository;
+import com.example.foodplanner.model.repository.DataRepository;
 import com.facebook.AccessToken;
 import com.facebook.login.LoginManager;
 import com.facebook.login.widget.LoginButton;
@@ -69,7 +75,13 @@ public class LoginFragment extends Fragment implements LoginView,ThirdpartyAuthV
         defineViews(view);
         buttonsHandle();
         loginUpPresenter=new LogInPresenter(this, AuthRepository.getInstance());
-        thirdPartyPresenter=new ThirdPartyPresenter(this, AuthRepository.getInstance());
+        thirdPartyPresenter=new ThirdPartyPresenter(this,AuthRepository.getInstance()
+                ,getContext() ,
+                DataRepository.getInstance(
+                        RemoteDataSource.getInstance(),
+                        LocalDataSource.getInstance(getContext()),
+                        new SharedPrefs(getContext()),
+                        new FirestoreDb()));
 
         //thirdPartyPresenter.facebookLogin(facebook_login_Btn);
 
@@ -213,6 +225,11 @@ public class LoginFragment extends Fragment implements LoginView,ThirdpartyAuthV
     @Override
     public void showError(String s) {
         toastMaker(s);
+    }
+
+    @Override
+    public Context getContextt() {
+        return getActivity();
     }
 
     @Override

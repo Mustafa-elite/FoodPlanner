@@ -29,6 +29,10 @@ public class MainActivity extends AppCompatActivity {
         NavController navController= ((NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment)).getNavController();
         NavigationUI.setupWithNavController(bottomNavigationView,navController);
 
+        if(FirebaseAuth.getInstance().getCurrentUser()!=null)
+        {
+            navController.navigate(R.id.homeFragment);
+        }
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int destinationId = item.getItemId();
 

@@ -24,6 +24,9 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.foodplanner.R;
+import com.example.foodplanner.model.local.database.LocalDataSource;
+import com.example.foodplanner.model.local.sharedpreferences.SharedPrefs;
+import com.example.foodplanner.model.remote.database.FirestoreDb;
 import com.example.foodplanner.model.remote.server.categories.Category;
 import com.example.foodplanner.model.remote.server.countries.Country;
 import com.example.foodplanner.model.remote.server.ingredients.Ingredient;
@@ -83,7 +86,12 @@ public class SearchFragment extends Fragment implements SearchViewConnector, Sea
         defineViews(view);
         //buttonsHandle();
 
-        searchPresenter=new SearchPresenter(this,DataRepository.getInstance(RemoteDataSource.getInstance(), getContext()));
+        searchPresenter=new SearchPresenter(this,
+                DataRepository.getInstance(
+                        RemoteDataSource.getInstance(),
+                        LocalDataSource.getInstance(getContext()),
+                        new SharedPrefs(getContext()),
+                        new FirestoreDb()));
 
         search_recyclerView.setHasFixedSize(true);
         categoriesAdapter = new CategoriesAdapter(this, new ArrayList<>());

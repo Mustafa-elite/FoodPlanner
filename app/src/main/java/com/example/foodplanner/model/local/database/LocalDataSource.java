@@ -21,13 +21,14 @@ public class LocalDataSource {
     private final ScheduledMealDao scheduledMealDao;
     private static LocalDataSource localDataSource=null;
     private Flowable<List<DbMeal>> meals;
-
+    MealsDataBase mealsDataBase;
 
     private LocalDataSource(Context _context) {
-        MealsDataBase mealsDataBase = MealsDataBase.getInstance(_context);
+        mealsDataBase = MealsDataBase.getInstance(_context);
         mealsDao= mealsDataBase.getMealsDao();
         scheduledMealDao=mealsDataBase.getScheduledMealDao();
         meals=mealsDao.getAllFavMeals();
+
     }
 
     public static LocalDataSource getInstance(Context context)
@@ -64,6 +65,9 @@ public class LocalDataSource {
     public Completable deleteCalendarMeal(String selectedDate,String mealId)
     {
         return scheduledMealDao.deleteScheduledMeal(selectedDate,mealId);
+    }
+    public void clearAllData() {
+        mealsDataBase.clearDatabase();
     }
 
 

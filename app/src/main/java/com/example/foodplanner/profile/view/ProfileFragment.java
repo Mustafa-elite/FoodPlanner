@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.foodplanner.R;
+import com.example.foodplanner.model.local.database.LocalDataSource;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -72,6 +73,7 @@ public class ProfileFragment extends Fragment {
                 if(user!=null)
                 {
                     FirebaseAuth.getInstance().signOut();
+                    LocalDataSource.getInstance(getContext()).clearAllData();
                 }
                 NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment);
                 navController.navigate(R.id.loginFragment);

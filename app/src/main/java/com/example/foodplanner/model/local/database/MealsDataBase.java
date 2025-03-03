@@ -31,6 +31,9 @@ public abstract class MealsDataBase extends RoomDatabase{
         }
         return mealsDataBase;
     }
+    public void clearDatabase() {
+        new Thread(this::clearAllTables).start();
+    }
 }
 
 

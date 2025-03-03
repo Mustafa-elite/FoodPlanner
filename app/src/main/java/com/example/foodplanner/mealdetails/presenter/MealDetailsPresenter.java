@@ -26,12 +26,6 @@ public class MealDetailsPresenter {
         this.mealDetailsView = mealDetailsView;
         this.dataRepository = dataRepository;
     }
-
-
-
-
-
-
     @SuppressLint("CheckResult")
     public void loadImageWithGlide(String imageUrl, Consumer<Bitmap> onSuccess, Consumer<Throwable> onError) {
         Log.d("GlideDebug", "Image URL: " + imageUrl);
@@ -53,16 +47,15 @@ public class MealDetailsPresenter {
                 .subscribe(onSuccess,onError);
         //bitmap -> Log.i("TAG", "loadImageWithGlide: "), throwable -> Log.i("TAGError", throwable.getMessage()));
     }
-
     public void loadMainImage(String imageUrl) {
         loadImageWithGlide(imageUrl,
                 bitmap -> mealDetailsView.setMainImage((Bitmap) bitmap),
                 throwable -> mealDetailsView.makeToast(throwable.getMessage()));
     }
-
     @SuppressLint("CheckResult")
     public void saveFavMeal(Meal meal,Bitmap mealImage) {
-        dataRepository.insertLocalMeal(meal,mealImage)
+        DbMeal dbMeal= new DbMeal(meal,mealImage);
+        dataRepository.insertLocalMeal(dbMeal)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -72,11 +65,22 @@ public class MealDetailsPresenter {
                             Log.i("TAG", throwable.getMessage());
                             mealDetailsView.makeToast("Internal Problem");
                         });
+        dataRepository.insertRemoteFavMeal(dbMeal)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        ()-> {
+                            Log.i("TAG", "savedMealTo Firestore fav Succesfully");
+                        },//mealDetailsView.makeToast("saved Successfully"),
+                        throwable ->
+                        {
+                            throwable.getCause();
+                            Log.i("TAG", throwable.getMessage());
+                            //mealDetailsView.makeToast("Internal Problem");
+                        });
     }
-
     @SuppressLint("CheckResult")
     public void saveCalMeal(Meal meal, String formattedDate, Bitmap mealImage) {
-
         ScheduledMeal scheduledMeal=new ScheduledMeal(formattedDate,new DbMeal(meal,mealImage));
         dataRepository.insertLocalCalMeal(scheduledMeal)
                 .subscribeOn(Schedulers.io())
@@ -87,6 +91,19 @@ public class MealDetailsPresenter {
                         {
                             Log.i("TAG", throwable.getMessage());
                             mealDetailsView.makeToast("Internal Problem");
-                        });;
+                        });
+        dataRepository.insertRemoteCalMeal(scheduledMeal)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        ()-> {
+                            Log.i("TAG", "savedMealTo Firestore cal Succesfully");
+                        },//mealDetailsView.makeToast("saved Successfully"),
+                        throwable ->
+                        {
+                            throwable.getCause();
+                            Log.i("TAG", throwable.getMessage());
+                            //mealDetailsView.makeToast("Internal Problem");
+                        });
     }
 }

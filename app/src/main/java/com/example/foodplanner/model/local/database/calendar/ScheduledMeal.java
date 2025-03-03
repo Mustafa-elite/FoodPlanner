@@ -8,6 +8,7 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import com.example.foodplanner.model.local.database.favorites.DbMeal;
+
 @Entity(tableName = "scheduled_meals", primaryKeys = {"date", "mealId"})
 public class ScheduledMeal {
     @NonNull

@@ -19,7 +19,10 @@ import com.example.foodplanner.mainapp.NetworkUtil;
 import com.example.foodplanner.mainapp.view.ConfirmationDialogFragment;
 import com.example.foodplanner.R;
 import com.example.foodplanner.favorite.presenter.FavoritesPresenter;
+import com.example.foodplanner.model.local.database.LocalDataSource;
 import com.example.foodplanner.model.local.database.favorites.DbMeal;
+import com.example.foodplanner.model.local.sharedpreferences.SharedPrefs;
+import com.example.foodplanner.model.remote.database.FirestoreDb;
 import com.example.foodplanner.model.remote.server.meals.Meal;
 import com.example.foodplanner.model.remote.server.network.RemoteDataSource;
 import com.example.foodplanner.model.repository.DataRepository;
@@ -57,7 +60,12 @@ public class FavoritesFragment extends Fragment implements FavoriteView,Favorite
         favRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         favAdapter= new FavAdapter(getContext(),this);
 
-        favoritesPresenter =new FavoritesPresenter(this, DataRepository.getInstance(RemoteDataSource.getInstance(),getContext()));
+        favoritesPresenter =new FavoritesPresenter(this,
+                DataRepository.getInstance(
+                        RemoteDataSource.getInstance(),
+                        LocalDataSource.getInstance(getContext()),
+                        new SharedPrefs(getContext()),
+                        new FirestoreDb()));
 
 
         favRecyclerView.setAdapter(favAdapter);

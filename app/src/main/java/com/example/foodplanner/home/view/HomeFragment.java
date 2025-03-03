@@ -23,6 +23,9 @@ import android.widget.Toast;
 import com.example.foodplanner.R;
 import com.example.foodplanner.home.presenter.HomePresenter;
 import com.example.foodplanner.mainapp.NetworkUtil;
+import com.example.foodplanner.model.local.database.LocalDataSource;
+import com.example.foodplanner.model.local.sharedpreferences.SharedPrefs;
+import com.example.foodplanner.model.remote.database.FirestoreDb;
 import com.example.foodplanner.model.remote.server.meals.Meal;
 import com.example.foodplanner.model.remote.server.network.RemoteDataSource;
 import com.example.foodplanner.model.repository.DataRepository;
@@ -96,7 +99,12 @@ public class HomeFragment extends Fragment implements HomeView , HomeViewConnect
             recyclerviewText.setVisibility(View.VISIBLE);
             randomMealsAdapter= new RandomMealsAdapter(new ArrayList<>(),this);
 
-            homePresenter = new HomePresenter(this, DataRepository.getInstance(RemoteDataSource.getInstance(),getContext()));
+            homePresenter = new HomePresenter(this,
+                    DataRepository.getInstance(
+                            RemoteDataSource.getInstance(),
+                            LocalDataSource.getInstance(getContext()),
+                            new SharedPrefs(getContext()),
+                            new FirestoreDb()));
             homePresenter.getRandomMeal();
             homePresenter.get10RandomMeals();
 

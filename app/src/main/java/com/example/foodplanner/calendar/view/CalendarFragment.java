@@ -20,7 +20,10 @@ import com.example.foodplanner.mainapp.NetworkUtil;
 import com.example.foodplanner.mainapp.view.ConfirmationDialogFragment;
 import com.example.foodplanner.R;
 import com.example.foodplanner.calendar.presenter.CalendarPresenter;
+import com.example.foodplanner.model.local.database.LocalDataSource;
 import com.example.foodplanner.model.local.database.favorites.DbMeal;
+import com.example.foodplanner.model.local.sharedpreferences.SharedPrefs;
+import com.example.foodplanner.model.remote.database.FirestoreDb;
 import com.example.foodplanner.model.remote.server.meals.Meal;
 import com.example.foodplanner.model.remote.server.network.RemoteDataSource;
 import com.example.foodplanner.model.repository.DataRepository;
@@ -62,7 +65,12 @@ public class CalendarFragment extends Fragment implements com.example.foodplanne
         calRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         calAdapter= new CalAdapter(getContext(),this);
 
-        calendarPresenter =new CalendarPresenter(this, DataRepository.getInstance(RemoteDataSource.getInstance(),getContext()));
+        calendarPresenter =new CalendarPresenter(this,
+                DataRepository.getInstance(
+                        RemoteDataSource.getInstance(),
+                        LocalDataSource.getInstance(getContext()),
+                        new SharedPrefs(getContext()),
+                        new FirestoreDb()));
 
 
         calRecyclerView.setAdapter(calAdapter);

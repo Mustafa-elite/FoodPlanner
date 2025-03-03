@@ -1,6 +1,7 @@
 package com.example.foodplanner.favorite.presenter;
 
 import android.annotation.SuppressLint;
+import android.util.Log;
 
 import com.example.foodplanner.favorite.view.FavoriteView;
 import com.example.foodplanner.model.local.database.favorites.DbMeal;
@@ -50,6 +51,16 @@ public class FavoritesPresenter {
                         {
                             //Log.i("TAG", throwable.getMessage());
                             favoriteView.makeToast("Internal Problem");
+                        });
+        dataRepository.deleteRemoteFavMeal(dbMeal.getMealId())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        ()-> Log.i("TAG", "removeFavMeal: remote"),
+                        throwable ->
+                        {
+                            //Log.i("TAG", throwable.getMessage());
+                            favoriteView.makeToast("Internal Problem in remote delete");
                         });;
     }
 

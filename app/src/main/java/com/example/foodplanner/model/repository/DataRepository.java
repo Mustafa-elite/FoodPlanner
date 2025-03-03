@@ -2,15 +2,16 @@ package com.example.foodplanner.model.repository;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Log;
 
 
 import com.example.foodplanner.model.local.database.calendar.ScheduledMeal;
 import com.example.foodplanner.model.local.database.favorites.DbMeal;
 import com.example.foodplanner.model.local.database.LocalDataSource;
+import com.example.foodplanner.model.remote.database.FirestoreDb;
 import com.example.foodplanner.model.remote.server.categories.Categories;
 import com.example.foodplanner.model.remote.server.countries.Countries;
 import com.example.foodplanner.model.remote.server.ingredients.Ingredients;
-import com.example.foodplanner.model.remote.server.meals.Meal;
 import com.example.foodplanner.model.remote.server.meals.Meals;
 import com.example.foodplanner.model.local.sharedpreferences.SharedPrefs;
 
@@ -21,30 +22,30 @@ import java.util.List;
 
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Flowable;
+import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
 
 public class DataRepository {
     private RemoteDataSource remoteDataSource;
     private SharedPrefs sharedPrefs;
     private LocalDataSource localDataSource;
+    private FirestoreDb firestoreDb;
     private static DataRepository dataRepository=null;
-    private static Context  context;
+    //private static Context  context;
 
-    private DataRepository(RemoteDataSource remoteDataSource, Context _context) {
+
+    private DataRepository(RemoteDataSource remoteDataSource,LocalDataSource localDataSource ,SharedPrefs sharedPrefs,FirestoreDb firestoreDb) {
         this.remoteDataSource = remoteDataSource;
-        sharedPrefs=new SharedPrefs(_context);
-        context=_context;
-        localDataSource=LocalDataSource.getInstance(_context);
+        this.sharedPrefs=sharedPrefs;
+        //context=_context;
+        this.localDataSource=localDataSource;
+        this.firestoreDb=firestoreDb;
     }
-    public static DataRepository getInstance(RemoteDataSource remoteDataSource, Context _context)
+    public static DataRepository getInstance(RemoteDataSource remoteDataSource,LocalDataSource localDataSource ,SharedPrefs sharedPrefs,FirestoreDb firestoreDb)
     {
         if(dataRepository==null)
         {
-            dataRepository=new DataRepository(remoteDataSource,_context);
-        }
-        else {
-            context=_context;
-
+            dataRepository=new DataRepository(remoteDataSource,localDataSource,sharedPrefs,firestoreDb);
         }
         return dataRepository;
     }
@@ -86,9 +87,10 @@ public class DataRepository {
         return remoteDataSource.getMealByIdCall(id);
     }
 
-    public Completable insertLocalMeal(Meal mealToSave, Bitmap mealImage)
+    public Completable insertLocalMeal(DbMeal dbMeal)
     {
-        DbMeal dbMeal= new DbMeal(mealToSave,mealImage);
+
+
         return localDataSource.insertFavMeal(dbMeal);
     }
 
@@ -124,14 +126,38 @@ public class DataRepository {
 
     public Preference<String> saveLocalSharedPref(String key,String val)
     {
-        sharedPrefs.setRxSharedPreferencesContext(context);
 
         return sharedPrefs.saveSharedPref(key,val);
     }
     public Preference<String>getLocalSharedPref(String key,String defaultValue)
     {
-        sharedPrefs.setRxSharedPreferencesContext(context);
+
         return sharedPrefs.getSharedPref(key,defaultValue);
 
     }
+
+    public Completable insertRemoteCalMeal(ScheduledMeal scheduledMeal) {
+        return firestoreDb.savefirestoreCalMeal(scheduledMeal);
+    }
+    public Completable insertRemoteFavMeal(DbMeal dbMeal) {
+        return firestoreDb.savefirestoreFavMeal(dbMeal);
+    }
+    public Observable<List<DbMeal>> getRemoteFavMeals(){
+
+        return  firestoreDb.getFirestoreFavMeals();
+    }
+    public Observable<List<ScheduledMeal>> getRmoteCalMeals(){
+
+        return firestoreDb.fetchScheduledMeals();
+
+    }
+    public Completable deleteRemoteCalMeal(String selectedDate,String mealId)
+    {
+        return firestoreDb.deleteScheduledMeal(selectedDate,mealId);
+    }
+    public Completable deleteRemoteFavMeal(String mealId){
+        return firestoreDb.deleteFavoriteMeal(mealId);
+    }
+
+
 }

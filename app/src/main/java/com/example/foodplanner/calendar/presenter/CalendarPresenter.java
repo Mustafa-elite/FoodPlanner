@@ -1,6 +1,7 @@
 package com.example.foodplanner.calendar.presenter;
 
 import android.annotation.SuppressLint;
+import android.util.Log;
 
 import com.example.foodplanner.calendar.view.CalendarView;
 import com.example.foodplanner.model.local.database.calendar.ScheduledMeal;
@@ -53,7 +54,17 @@ public class CalendarPresenter {
                         {
                             //Log.i("TAG", throwable.getMessage());
                             calendarView.makeToast("Internal Problem");
-                        });;;
+                        });
+        dataRepository.deleteRemoteCalMeal(selectedDate,mealId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        ()-> Log.i("TAG", "removeCalMeal: deleted cal "),
+                        throwable ->
+                        {
+                            //Log.i("TAG", throwable.getMessage());
+                            calendarView.makeToast("Internal Problem deleting remote cal meal");
+                        });
     }
 
     @SuppressLint("CheckResult")
@@ -66,6 +77,6 @@ public class CalendarPresenter {
                         {
                             //Log.i("TAG", throwable.getMessage());
                             calendarView.makeToast("Internal Problem");
-                        });;
+                        });
     }
 }

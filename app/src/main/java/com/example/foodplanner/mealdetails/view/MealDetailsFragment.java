@@ -23,6 +23,9 @@ import android.widget.Toast;
 import com.example.foodplanner.R;
 import com.example.foodplanner.mainapp.view.ConfirmationDialogFragment;
 import com.example.foodplanner.mealdetails.presenter.MealDetailsPresenter;
+import com.example.foodplanner.model.local.database.LocalDataSource;
+import com.example.foodplanner.model.local.sharedpreferences.SharedPrefs;
+import com.example.foodplanner.model.remote.database.FirestoreDb;
 import com.example.foodplanner.model.remote.server.meals.Meal;
 import com.example.foodplanner.model.remote.server.network.RemoteDataSource;
 import com.example.foodplanner.model.repository.DataRepository;
@@ -77,7 +80,12 @@ public class MealDetailsFragment extends Fragment implements MealDetailsView,Det
             meal = getArguments().getParcelable("random_meal");
             if (meal != null) {
                 IngredientsAdapter ingredientsAdapter=new IngredientsAdapter(meal.getIngredients(),this);
-                mealDetailsPresenter=new MealDetailsPresenter(this, DataRepository.getInstance(RemoteDataSource.getInstance(),getContext()));
+                mealDetailsPresenter=new MealDetailsPresenter(this,
+                        DataRepository.getInstance(
+                                RemoteDataSource.getInstance(),
+                                LocalDataSource.getInstance(getContext()),
+                                new SharedPrefs(getContext()),
+                                new FirestoreDb()));
                 mealDetailsPresenter.loadMainImage(meal.getStrMealThumb());
                 //mealDetailsPresenter.loadcountryImage(meal.getStrArea());
                 LinearLayoutManager layoutManager=new LinearLayoutManager(getContext());

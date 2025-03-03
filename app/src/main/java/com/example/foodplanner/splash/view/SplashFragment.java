@@ -17,6 +17,9 @@ import android.widget.Button;
 
 import com.example.foodplanner.R;
 import com.example.foodplanner.mainapp.view.MainActivity;
+import com.example.foodplanner.model.local.database.LocalDataSource;
+import com.example.foodplanner.model.local.sharedpreferences.SharedPrefs;
+import com.example.foodplanner.model.remote.database.FirestoreDb;
 import com.example.foodplanner.model.remote.server.network.RemoteDataSource;
 import com.example.foodplanner.model.repository.DataRepository;
 
@@ -44,7 +47,11 @@ public class SplashFragment extends Fragment {
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.splash_fragment, container, false);
 
-        dataRepository=DataRepository.getInstance(RemoteDataSource.getInstance(),getContext());
+        dataRepository=DataRepository.getInstance(
+                RemoteDataSource.getInstance(),
+                LocalDataSource.getInstance(getContext()),
+                new SharedPrefs(getContext()),
+                new FirestoreDb());
 
 
 
@@ -69,6 +76,7 @@ public class SplashFragment extends Fragment {
                 splashSkipButton.setVisibility(Button.VISIBLE);
             }
             else {
+
                 Intent startIntent= new Intent(getContext(), MainActivity.class);
                 startIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(startIntent);
