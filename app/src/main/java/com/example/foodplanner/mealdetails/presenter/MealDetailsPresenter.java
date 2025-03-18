@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.util.Log;
 
 import com.bumptech.glide.Glide;
+import com.example.foodplanner.calendar.model.CalendarHelper;
 import com.example.foodplanner.mealdetails.view.MealDetailsView;
 import com.example.foodplanner.model.local.database.calendar.ScheduledMeal;
 import com.example.foodplanner.model.local.database.favorites.DbMeal;
@@ -78,6 +79,8 @@ public class MealDetailsPresenter {
                             Log.i("TAG", throwable.getMessage());
                             //mealDetailsView.makeToast("Internal Problem");
                         });
+
+
     }
     @SuppressLint("CheckResult")
     public void saveCalMeal(Meal meal, String formattedDate, Bitmap mealImage) {
@@ -105,5 +108,9 @@ public class MealDetailsPresenter {
                             Log.i("TAG", throwable.getMessage());
                             //mealDetailsView.makeToast("Internal Problem");
                         });
+        CalendarHelper.addMealToCalendar(mealDetailsView.getContext(),scheduledMeal);
+        //CalendarHelper.fetchCalendarEvents(mealDetailsView.getContext());
     }
+
+
 }

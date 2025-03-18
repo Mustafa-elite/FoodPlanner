@@ -41,6 +41,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 public class MealDetailsFragment extends Fragment implements MealDetailsView,DetailsViewConnector {
 
@@ -118,6 +122,7 @@ public class MealDetailsFragment extends Fragment implements MealDetailsView,Det
     private void calBtnHandle() {
         if(FirebaseAuth.getInstance().getCurrentUser()!=null)
         {
+            requestCalendarPermissions();
             openDatePicker();
         }
         else {
@@ -161,7 +166,7 @@ public class MealDetailsFragment extends Fragment implements MealDetailsView,Det
 
         datePicker.addOnPositiveButtonClickListener(selection -> {
             String formattedDate = new SimpleDateFormat("d-M-y", Locale.getDefault()).format(new Date(selection));
-            //makeToast(formattedDate);
+            makeToast(formattedDate);
             mealDetailsPresenter.saveCalMeal(meal,formattedDate,mealImage);
         });
     }
@@ -221,4 +226,27 @@ public class MealDetailsFragment extends Fragment implements MealDetailsView,Det
                 bitmap -> ImageContainer.setImageBitmap((Bitmap) bitmap),
                 throwable -> makeToast(throwable.getMessage()));
     }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 100) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(getContext(), "Calendar permission granted!", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getContext(), "Calendar permission denied!", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+
+    public void requestCalendarPermissions() {
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_CALENDAR) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR},
+                    100);
+        }
+    }
+
 }

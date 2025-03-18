@@ -3,6 +3,7 @@ package com.example.foodplanner.calendar.presenter;
 import android.annotation.SuppressLint;
 import android.util.Log;
 
+import com.example.foodplanner.calendar.model.CalendarHelper;
 import com.example.foodplanner.calendar.view.CalendarView;
 import com.example.foodplanner.model.local.database.calendar.ScheduledMeal;
 import com.example.foodplanner.model.local.database.favorites.DbMeal;
@@ -23,11 +24,11 @@ public class CalendarPresenter {
     public CalendarPresenter(CalendarView calendarView, DataRepository dataRepository) {
         this.calendarView = calendarView;
         this.dataRepository = dataRepository;
-        //dataRepository.getLocalFavMeals();
     }
 
     @SuppressLint("CheckResult")
     public void getDateMeal(String selectedDate) {
+        Log.i("TAG", "getDateMeal: "+selectedDate);
         dataRepository.getLocalCalMeals(selectedDate)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -44,8 +45,8 @@ public class CalendarPresenter {
     }
 
     @SuppressLint("CheckResult")
-    public void removeCalMeal(String mealId, String selectedDate) {
-        dataRepository.deleteLocalCalMeal(selectedDate,mealId)
+    public void removeCalMeal(DbMeal dbMeal, String selectedDate) {
+        dataRepository.deleteLocalCalMeal(selectedDate,dbMeal.getMealId())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -55,7 +56,7 @@ public class CalendarPresenter {
                             //Log.i("TAG", throwable.getMessage());
                             calendarView.makeToast("Internal Problem");
                         });
-        dataRepository.deleteRemoteCalMeal(selectedDate,mealId)
+        dataRepository.deleteRemoteCalMeal(selectedDate,dbMeal.getMealId())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -65,6 +66,7 @@ public class CalendarPresenter {
                             //Log.i("TAG", throwable.getMessage());
                             calendarView.makeToast("Internal Problem deleting remote cal meal");
                         });
+        CalendarHelper.removeMealFromCalendar(calendarView.getContext(), new ScheduledMeal(selectedDate,dbMeal));
     }
 
     @SuppressLint("CheckResult")

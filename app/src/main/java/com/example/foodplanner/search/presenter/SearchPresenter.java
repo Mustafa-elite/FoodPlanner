@@ -1,10 +1,15 @@
 package com.example.foodplanner.search.presenter;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.location.Address;
+import android.location.Geocoder;
 import android.util.Log;
 
 
+import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.bumptech.glide.Glide;
@@ -13,9 +18,14 @@ import com.example.foodplanner.model.remote.server.categories.Category;
 import com.example.foodplanner.model.remote.server.countries.Country;
 import com.example.foodplanner.model.remote.server.ingredients.Ingredient;
 import com.example.foodplanner.model.repository.DataRepository;
+import com.example.foodplanner.search.model.CountryCodeConverter;
 import com.example.foodplanner.search.view.SearchViewInterface;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -115,6 +125,7 @@ public class SearchPresenter {
                             countries ->
                             {
                                 fullCountryList=countries.getCountries();
+                                fullCountryList.add(0,new Country("Your Country"));
                                 searchViewInterface.setCountriesList(fullCountryList);
                             },
                             throwable -> Log.i("TAG", throwable.getMessage()));
@@ -135,7 +146,6 @@ public class SearchPresenter {
             case INGREDIENTLIST:filterIngredientList(query);
             break;
         }
-
     }
 
     private void filterIngredientList(String query) {
@@ -218,7 +228,44 @@ public class SearchPresenter {
                             searchViewInterface.navigateToSearchedMeals(meals,countryName+ " Meals");
                             //Log.i("goToCountryMeals", meals.toString());
                         },
-                        throwable -> Log.i("TAG", throwable.getCause().toString()));
+                        Throwable::getCause);
         ;
     }
+
+    public void getLocationMeals() {
+
+        FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(searchViewInterface.getContext());
+
+        if (ActivityCompat.checkSelfPermission(searchViewInterface.getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+
+        fusedLocationClient.getLastLocation()
+                .addOnSuccessListener( location -> {
+                    if (location != null) {
+                        String countryName=getCountryName(location.getLatitude(), location.getLongitude());
+                        if(countryName!=null){
+
+                            String countryNationality=CountryCodeConverter.getNationality(countryName);
+                            Log.i("TAG", "getLocationMeals: "+countryName);
+                            goToCountryMeals(countryNationality);
+                        }
+                    }
+                });
+    }
+    private String getCountryName(double latitude, double longitude) {
+        Geocoder geocoder = new Geocoder(searchViewInterface.getContext(), Locale.getDefault());
+        try {
+            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+            if (addresses != null && !addresses.isEmpty()) {
+                Log.i("TAG", "getCountryName: ");
+                return addresses.get(0).getCountryName();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }

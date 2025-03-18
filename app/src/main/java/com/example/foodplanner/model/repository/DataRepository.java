@@ -37,7 +37,6 @@ public class DataRepository {
     private DataRepository(RemoteDataSource remoteDataSource,LocalDataSource localDataSource ,SharedPrefs sharedPrefs,FirestoreDb firestoreDb) {
         this.remoteDataSource = remoteDataSource;
         this.sharedPrefs=sharedPrefs;
-        //context=_context;
         this.localDataSource=localDataSource;
         this.firestoreDb=firestoreDb;
     }

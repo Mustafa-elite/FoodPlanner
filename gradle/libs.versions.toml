@@ -30,6 +30,9 @@ rxandroid = "3.0.2"
 rxjava = "3.1.6"
 rxjava3RetrofitAdapter = "3.0.0"
 rxPreferences = "2.0.0"
+playServicesLocation = "21.3.0"
+workRuntime = "2.10.0"
+workRuntimeVersion = "2.9.0"
 
 
 [libraries]
@@ -69,6 +72,9 @@ rx-preferences = { module = "com.f2prateek.rx.preferences2:rx-preferences", vers
 rxandroid = { module = "io.reactivex.rxjava3:rxandroid", version.ref = "rxandroid" }
 rxjava = { module = "io.reactivex.rxjava3:rxjava", version.ref = "rxjava" }
 rxjava3-retrofit-adapter = { module = "com.github.akarnokd:rxjava3-retrofit-adapter", version.ref = "rxjava3RetrofitAdapter" }
+play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
+work-runtime = { module = "androidx.work:work-runtime", version.ref = "workRuntime" }
+work-runtime-v290 = { module = "androidx.work:work-runtime", version.ref = "workRuntimeVersion" }
 
 
 

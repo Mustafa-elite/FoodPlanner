@@ -49,7 +49,7 @@ public class CalAdapter extends RecyclerView.Adapter<CalAdapter.ViewHolder> {
             @Override
             public void onClick(View v) {
 
-                calendarViewConnector.deleteCalMeal(dbMeal.getMealId());
+                calendarViewConnector.deleteCalMeal(dbMeal);
             }
         });
         holder.fav_card_view.setOnClickListener(new View.OnClickListener() {

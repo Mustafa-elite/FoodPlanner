@@ -41,7 +41,14 @@ public class CountriesAdapter extends RecyclerView.Adapter<CountriesAdapter.View
         Country country = countryList.get(position);
         holder.search_item_name.setText(country.getName());
         String CountryCode= CountryCodeConverter.getCountryCode(country.getName());
-        searchViewConnector.getImage(baseURL+CountryCode+".png", holder.search_item_image);
+        if(country.getName().equals("Your Country"))
+        {
+            holder.search_item_image.setImageResource(R.drawable.location);
+        }
+        else {
+            searchViewConnector.getImage(baseURL+CountryCode+".png", holder.search_item_image);
+        }
+
         holder.search_linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

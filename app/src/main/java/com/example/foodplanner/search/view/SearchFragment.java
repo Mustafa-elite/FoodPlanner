@@ -1,12 +1,16 @@
 package com.example.foodplanner.search.view;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -64,6 +68,8 @@ public class SearchFragment extends Fragment implements SearchViewConnector, Sea
     IngredientAdapter ingredientsAdapter;
     CountriesAdapter countriesAdapter ;
     Observable<String> searchObservable;
+
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 100;
 
 
 
@@ -139,9 +145,6 @@ public class SearchFragment extends Fragment implements SearchViewConnector, Sea
         int checkedId=chipGroup.getCheckedChipId();
         if (checkedId == R.id.chipCategory) {
             searchPresenter.filterList(query,SearchPresenter.CATEGORYLIST);
-
-
-
         } else if (checkedId == R.id.chipIngredient) {
             searchPresenter.filterList(query,SearchPresenter.INGREDIENTLIST);
 
@@ -200,7 +203,24 @@ public class SearchFragment extends Fragment implements SearchViewConnector, Sea
 
     @Override
     public void getCountryMeals(String countryName) {
-        searchPresenter.goToCountryMeals(countryName);
+        if(countryName.equals("Your Country")){
+            if(isLocationPermitted()){
+                searchPresenter.getLocationMeals();
+            }
+            else {
+                requestUserPermission();
+            }
+        }
+        else{
+            searchPresenter.goToCountryMeals(countryName);
+        }
+
+    }
+
+    private void requestUserPermission() {
+        Log.i("TAG", "requestUserPermission: ");
+        requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION},
+                LOCATION_PERMISSION_REQUEST_CODE);
     }
 
     @Override
@@ -246,4 +266,28 @@ public class SearchFragment extends Fragment implements SearchViewConnector, Sea
         bundle.putString("title",title);
         navController.navigate(R.id.searchedMealsFragment2,bundle);
     }
+
+    private boolean isLocationPermitted() {
+        return ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION)
+                        == PackageManager.PERMISSION_GRANTED;
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        Log.i("TAG", "onRequestPermissionsResult: 11");
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Log.i("TAG", "onRequestPermissionsResult: ");
+                searchPresenter.getLocationMeals();
+            } else {
+
+                Toast.makeText(getContext(), "Location Permission is required to know your country", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
 }

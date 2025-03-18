@@ -96,11 +96,11 @@ public class CalendarFragment extends Fragment implements com.example.foodplanne
     }
 
     @Override
-    public void deleteCalMeal(String mealId) {
+    public void deleteCalMeal(DbMeal dbMeal) {
         ConfirmationDialogFragment dialog = ConfirmationDialogFragment.newInstance(
                 "Do you Really want To delete the meal From the Calendar","Delete",
                 () -> {
-                    calendarPresenter.removeCalMeal(mealId,selectedDate);
+                    calendarPresenter.removeCalMeal(dbMeal,selectedDate);
                 }
         );
         dialog.show(getActivity().getSupportFragmentManager(), "ConfirmationDialog");

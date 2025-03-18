@@ -10,15 +10,31 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
+import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
 import com.example.foodplanner.R;
 
+import com.example.foodplanner.home.presenter.HomePresenter;
 import com.example.foodplanner.mainapp.NetworkUtil;
+import com.example.foodplanner.mainapp.presenter.MainAppPresenter;
+import com.example.foodplanner.mainapp.presenter.ScheduledReminderWorker;
+import com.example.foodplanner.model.local.database.LocalDataSource;
+import com.example.foodplanner.model.local.sharedpreferences.SharedPrefs;
+import com.example.foodplanner.model.remote.database.FirestoreDb;
+import com.example.foodplanner.model.remote.server.meals.Meal;
+import com.example.foodplanner.model.remote.server.network.RemoteDataSource;
+import com.example.foodplanner.model.repository.DataRepository;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class MainActivity extends AppCompatActivity {
+import java.util.concurrent.TimeUnit;
 
+public class MainActivity extends AppCompatActivity implements MainActivityView{
+
+    NavController navController;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,9 +42,23 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
-        NavController navController= ((NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment)).getNavController();
+        navController= ((NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment)).getNavController();
         NavigationUI.setupWithNavController(bottomNavigationView,navController);
 
+        MainAppPresenter mainAppPresenter= new MainAppPresenter(
+                        DataRepository.getInstance(
+                                RemoteDataSource.getInstance(),
+                                LocalDataSource.getInstance(this),
+                                new SharedPrefs(this),
+                                new FirestoreDb()),this);
+        if(getIntent().hasExtra("scheduledNotification")){
+            String mealId=getIntent().getStringExtra("scheduledNotification");
+            mainAppPresenter.getMealAndNavigate(mealId);
+        }
+        else{
+            WorkManager.getInstance(this).enqueue(
+            new OneTimeWorkRequest.Builder(ScheduledReminderWorker.class).build());
+        }
         if(FirebaseAuth.getInstance().getCurrentUser()!=null)
         {
             navController.navigate(R.id.homeFragment);
@@ -51,6 +81,8 @@ public class MainActivity extends AppCompatActivity {
             return true;
         });
 
+        ScheduledMealTask();
+
 
     }
 
@@ -63,6 +95,13 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
         dialog.show(getSupportFragmentManager(), "ConfirmationDialog");
+    }
+    public void ScheduledMealTask(){
+        PeriodicWorkRequest periodicWorkRequest=new PeriodicWorkRequest.Builder(ScheduledReminderWorker.class
+                ,1, TimeUnit.DAYS,
+                15,TimeUnit.MINUTES)
+                .build();
+        WorkManager.getInstance(this).enqueueUniquePeriodicWork("MealReminder", ExistingPeriodicWorkPolicy.UPDATE,periodicWorkRequest);
     }
 
 
@@ -97,5 +136,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
+    @Override
+    public void navigateToDetails(Meal meal) {
+        Bundle bundle= new Bundle();
+        bundle.putParcelable("random_meal",meal);
+        navController.navigate(R.id.mealDetailsFragment,bundle);
+    }
 }
